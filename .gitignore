@@ -34,3 +34,7 @@
 # Directories
 build
 docs
+
+# Private Files
+test/smtp_settings.hpp
+
