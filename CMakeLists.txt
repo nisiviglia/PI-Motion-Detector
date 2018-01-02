@@ -16,7 +16,7 @@ file (GLOB_RECURSE piDoorAlarm_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
 # Check for Boost libraries
-find_package(Boost REQUIRED COMPONENTS system) 
+find_package(Boost REQUIRED COMPONENTS system log filesystem thread) 
 include_directories( ${Boost_INCLUDE_DIRS} )
 
 # Create project as an executable 
@@ -64,4 +64,11 @@ add_executable (smtp_client_test test/smtp_client_test.cpp src/smtp_client.cpp)
 target_link_libraries (smtp_client_test gtest_main ${Boost_LIBRARIES})
 add_test (NAME smtp_client_test COMMAND smtp_client_test)
 
+add_executable (config_parser_test test/config_parser_test.cpp src/config_parser.cpp)
+target_link_libraries (config_parser_test gtest_main ${Boost_LIBRARIES})
+add_test (NAME config_parser_test COMMAND config_parser_test)
+
+add_executable (logger_test test/logger_test.cpp src/logger.cpp)
+target_link_libraries (logger_test gtest_main ${Boost_LIBRARIES})
+add_test (NAME logger_test COMMAND logger_test)
 
