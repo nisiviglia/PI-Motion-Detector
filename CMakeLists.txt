@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.2)
 set (CMAKE_CXX_STANDARD 11)
 
 # Project name
-project (piDoorAlarm)
+project (pi_door_alarm)
 
 # Set build output directories
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
@@ -11,7 +11,7 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # Grab all source files
-file (GLOB_RECURSE piDoorAlarm_SOURCES 
+file (GLOB_RECURSE pi_door_alarm_SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
@@ -20,8 +20,8 @@ find_package(Boost REQUIRED COMPONENTS system log filesystem thread)
 include_directories( ${Boost_INCLUDE_DIRS} )
 
 # Create project as an executable 
-add_executable(piDoorAlarm src/piDoorAlarm.cpp ${piDoorAlarm_SOURCES})
-target_link_libraries (piDoorAlarm ${Boost_LIBRARIES})
+add_executable(pi_door_alarm src/pi_door_alarm.cpp ${pi_door_alarm_SOURCES})
+target_link_libraries (pi_door_alarm ${Boost_LIBRARIES})
 
 ##################################################################
 # googletest setup
