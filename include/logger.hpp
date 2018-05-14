@@ -1,5 +1,5 @@
-#ifndef PI_DOOR_ALARM_LOGGER
-#define PI_DOOR_ALARM_LOGGER
+#ifndef PI_MOTION_DETECTOR_LOGGER
+#define PI_MOTION_DETECTOR_LOGGER
 
 #include<string>
 
@@ -32,7 +32,7 @@ class logger{
 
     private:
 
-        std::string folder_path;
+        std::string folder_path = "";
 };
 
 #endif

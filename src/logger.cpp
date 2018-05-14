@@ -38,7 +38,7 @@ namespace keywords = boost::log::keywords;
 /// Log entries are formatted as: <br> 
 ///     `[TimeStamp][Severity]: [Message]` <br>
 ///
-/// @param folder_path Path to where the log folder will be stored (ex. /var/log/pi-door-alarm/).
+/// @param folder_path Path to where the log folder will be stored (ex. /var/log/pi_motion_detector/).
 logger::logger(std::string folder_path) : folder_path(folder_path){
 
 	logging::register_simple_formatter_factory<
@@ -46,12 +46,13 @@ logger::logger(std::string folder_path) : folder_path(folder_path){
     
     logging::add_common_attributes();
 
-    logging::add_file_log(
-        keywords::target = this->folder_path, 
-            keywords::file_name = "%y%m%d_%3N.log",
+    auto sink = logging::add_file_log(
+        keywords::file_name = this->folder_path + "%y%m%d_%3N.log",
         keywords::rotation_size = 10 * 1024 * 1024,
         keywords::scan_method = sinks::file::scan_matching,
-		keywords::format = "[%TimeStamp%][%Severity%]: %Message%");   
+		keywords::format = "[%TimeStamp%][%Severity%]: %Message%",
+        keywords::open_mode = std::ios_base::app|std::ios_base::out,
+        keywords::auto_flush = true);
     
 	logging::core::get()->set_filter(
 		logging::trivial::severity >= logging::trivial::info);

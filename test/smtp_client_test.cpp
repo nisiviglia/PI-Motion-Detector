@@ -71,6 +71,15 @@ TEST(smtpClient_test, fail_to_send_with_invalid_auth){
     EXPECT_TRUE(rc);
 }
 
+// Test base 64 encoding
+TEST(smtpClient_test, base64_encode){
+    smtp_client s("test", 0, "test", "test");
+    
+    std::string test1 = "testtest";
+    std::string encoded_test1 = s.base64_encode(test1);
+    EXPECT_TRUE(encoded_test1 == "dGVzdHRlc3Q=");
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest( &argc, argv );
     return RUN_ALL_TESTS();

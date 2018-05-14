@@ -32,18 +32,22 @@ config_parser::config_parser(std::string filename) : filename(filename){
     
     // Check if config file exits and generate one if it doesn't
     std::ifstream f(filename.c_str());
-    if(f.good())
+    if(f.good()){
         f.close();
-    else
+    }
+    else{
         generate_config_file();
+        std::cerr << "config file not found. config generated." << std::endl;
+        exit(-1);
+    }
     
     // Parse the ini file into the property tree.
     try{
         boost::property_tree::read_ini(this->filename, this->tree);
     }
     catch(std::exception e){
-        std::cout << "error, malformed config file." << std::endl; 
-        std::terminate();
+        std::cerr << "error, malformed config file." << std::endl; 
+        exit(-1);
     }
 }
 
@@ -105,6 +109,35 @@ int config_parser::get_int(std::string path){
     return return_value;
 }
 
+/// @brief Gets an float value from from the config file.
+///
+/// @param path The section and key of the value wanted.
+/// This is given in the format of "section.key" .<br>
+///
+/// Example of config file: <br>
+///     `[MOTION]` <br>
+///     `sensitivity=0.02` <br>
+///
+/// Example of path string: <br>
+///     `"MOTION.sensitivity"` <br>
+///
+/// Key returned <br>
+///     `0.02`
+///
+///
+/// @return Float 
+float config_parser::get_float(std::string path){
+    float return_value = -1;
+
+    // Get value from ptree and return it if it exists
+    boost::optional<float> opt = tree.get_optional<float>(path);
+    if(opt){
+        return_value = *opt;         
+    }
+    
+    return return_value;
+}
+
 /// @brief Generates a generic config file at the location 
 /// supplied to the constructor.
 ///
@@ -119,7 +152,7 @@ bool config_parser::generate_config_file(){
     
     // Insert config values into file
     //      Header
-    os << "; Configuration file for pi-door-alarm\n";
+    os << "; Configuration file for pi-motion-detector\n";
     os << "; \n";
     os << "\n";
     
@@ -138,12 +171,18 @@ bool config_parser::generate_config_file(){
     os << "from_address=from@example.com\n";
     os << "to_address=to@example.com\n";
     os << "subject=\"Example email subject\"\n";
-    os << "message=\"Example email message\"\n";
+    os << "message=Example email message\n";
 
     //      Logger settings
     os << "\n";
     os << "[LOG]\n"; 
-    os << "log_folder=/var/log/pi-door-alarm/\n";
+    os << "log_folder=/var/log/pi_motion_detector/\n";
+
+    //      Motion settings
+    os << "\n";
+    os << "[MOTION]\n"; 
+    os << "sensitivity=0.02\n";
+    os << "sleep_in_sec=30\n";
 
     //      Footer
     os << "\n";

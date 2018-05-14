@@ -8,20 +8,20 @@ using namespace std;
 class smtp_settings{
 
     public:
-        string smtp_server = "smtp.example.com";
+        string smtp_server = "mail.optonline.net";
 
-        int smtp_port = 25;
+        int smtp_port = 587;
 
-        string smtp_username = "user";
+        string smtp_username = "TGlGZTAxMA==";
 
-        string smtp_password = "password";
+        string smtp_password = "MTAxQzUwMTk=";
 
 
-        string mail_from_address = "from@example.com";
+        string mail_from_address = "pi@google.com";
 
-        string mail_to_address = "to@example.com";
+        string mail_to_address = "nisiviglia@gmail.com";
 
-        string mail_subject = "Test Subject";
+        string mail_subject = "Test mail from pi";
 
         string mail_msg = "This is a test.";
 };

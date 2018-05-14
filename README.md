@@ -1,5 +1,5 @@
-# Pi Door Alarm
-This uses a Rasperry Pi Zero W combined with a LV-MaxSonar-EZ0 to monitor a door and notify you via text when it is open.
+# Pi Motion Detector
+This uses a Rasperry Pi Zero W combined with a LV-MaxSonar-EZ0 to monitor a door or other area and notify you via email/text when motion is detected.
 
 ## Build Instructions
 ```bash

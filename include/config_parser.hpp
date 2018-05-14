@@ -24,6 +24,7 @@ class config_parser{
 
         int get_int(std::string path);
 
+        float get_float(std::string path);
 
     private:
         bool generate_config_file();

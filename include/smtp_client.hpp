@@ -50,32 +50,32 @@ class smtp_client{
 
         std::string get_connection_output();
 
+        //Used to encode the username and password
+        std::string base64_encode(const std::string &val);
+
     private:
-            // The iostream used to open the connection to the SMTP server
-            boost::asio::ip::tcp::iostream stream;
 
-            // The metric used to timeout a stuck connection
-            int connection_timeout = 30;
+        // The metric used to timeout a stuck connection
+        int connection_timeout = 30;
 
-            // The string of text used to verify that the email was sent successfully.
-            // This is done by searching for this string of text in the text output
-            // from the connection.
-            std::string connection_success_msg = "250 2.0.0 OK ";
+        // The string of text used to verify that the email was sent successfully.
+        // This is done by searching for this string of text in the text output
+        // from the connection.
+        std::string connection_success_msg = "250 2.0.0 OK ";
 
-            // Holds the text output from the last connection
-            std::string connection_output = "";
+        // Holds the text output from the last connection
+        std::string connection_output = "";
 
+        // The DQDN of the SMTP server
+        std::string server = ""; 
 
-            // The DQDN of the SMTP server
-            std::string server = ""; 
+        // Port of the SMTP server
+        int port = 0; 
 
-            // Port of the SMTP server
-            int port = 0; 
+        // Username used to authenticate with the server
+        std::string username = ""; 
 
-            // Username used to authenticate with the server
-            std::string username = ""; 
-
-            // Password used to authenticate with the server
-            std::string password = ""; 
+        // Password used to authenticate with the server
+        std::string password = ""; 
 };
 #endif

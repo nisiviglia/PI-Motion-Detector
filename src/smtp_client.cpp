@@ -21,7 +21,12 @@
 /// @date 2017-12-30
 
 #include "../include/smtp_client.hpp"
+#include <sstream>
 #include <iostream>
+#include <boost/archive/iterators/base64_from_binary.hpp>
+#include <boost/archive/iterators/insert_linebreaks.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
+#include <boost/archive/iterators/ostream_iterator.hpp>
 
 /// @brief A constructor that takes in all necessary information to open a connection.
 ///
@@ -31,11 +36,7 @@
 /// @param password Password used to authenticate.
 smtp_client::smtp_client(
         std::string server, int port, std::string username, std::string password) 
-        : server(server), port(port), username(username), password(password){
-        
-    //Configure socket connection
-    stream.expires_from_now(boost::posix_time::seconds(this->connection_timeout));
-}
+        : server(server), port(port), username(username), password(password){}
 
 /// @brief Sends an email to the SMTP server after authentication.
 ///
@@ -44,27 +45,33 @@ smtp_client::smtp_client(
 /// @param subject Subject of the email.
 /// @param message Message body of the email.
 ///
-/// @return  False for success.
+/// @return  True for success.
 bool smtp_client::send(std::string fromAddress, std::string toAddress, 
         std::string subject, std::string message){
+    
+    //Init stream
+    boost::asio::ip::tcp::iostream stream;
+    
+    //Configure socket connection
+    stream.expires_from_now(boost::posix_time::seconds(this->connection_timeout));
 
     //Connect to SMTP server
     stream.connect(this->server, std::to_string(this->port));
     if (!stream)
     {
-        this->connection_output =  stream.error().message();
-        return true;
+        this->connection_output =  "connection failed: " + stream.error().message();
+        return false;
     }
-
+    
     //Send email
     stream << "HELO relay.example.com\r\n";
     stream << "AUTH LOGIN\r\n";
-    stream << username + "\r\n";
-    stream << password + "\r\n";
+    stream << this->base64_encode(username) + "\r\n";
+    stream << this->base64_encode(password) + "\r\n";
     stream << "MAIL FROM:<" + fromAddress + ">\r\n";
     stream << "RCPT TO:<" + toAddress + ">\r\n";
     stream << "DATA\r\n";
-    stream << "From: \"pi-door-alarm\" <door@location>\r\n";
+    stream << "From: \"alarm\" <alarm@pi.staten>\r\n";
     stream << "To: Person <" + toAddress + ">\r\n";
     stream << "Subject: " + subject + "\r\n";
     stream << "\r\n";
@@ -78,21 +85,23 @@ bool smtp_client::send(std::string fromAddress, std::string toAddress,
             std::istreambuf_iterator<char>(stream.rdbuf()),
             std::istreambuf_iterator<char>());
     
+    //Close connection
+    stream.close();
+
     //Confirm email was successfully sent
     if(this->connection_output
             .find(this->connection_success_msg) == std::string::npos){
 
-        return true;
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 /// @brief Change the default connection timeout metric.
 ///
 /// @param seconds 
 void smtp_client::set_connection_timeout_in_seconds(int seconds){
-    stream.expires_from_now(boost::posix_time::seconds(seconds));
     this->connection_timeout = seconds;
 }
 
@@ -121,5 +130,21 @@ void smtp_client::print_connection_output(){
 /// @return  A string containing all the server responses from the last connection.
 std::string smtp_client::get_connection_output(){
     return this->connection_output;
+}
+
+/// @brief converts a string to a base64 string.
+///
+/// @param input input string to be encoded.
+///
+/// @return base64 encoded string.
+// 
+// Credit: itc 
+// https://stackoverflow.com/a/28471421
+std::string smtp_client::base64_encode(const std::string &val){
+
+	using namespace boost::archive::iterators;
+    using It = base64_from_binary<transform_width<std::string::const_iterator, 6, 8>>;
+    auto tmp = std::string(It(std::begin(val)), It(std::end(val)));
+    return tmp.append((3 - val.size() % 3) % 3, '=');
 }
 
