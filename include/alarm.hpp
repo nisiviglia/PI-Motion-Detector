@@ -24,7 +24,7 @@ class alarm {
         void run();
 
     private:
-        std::string config_file_path = "pda_config.cfg"; 
+        std::string config_file_path = "pmd.cfg"; 
 
         config_parser config;
 

@@ -6,8 +6,9 @@ This uses a Rasperry Pi Zero W combined with a LV-MaxSonar-EZ0 to monitor a door
 mkdir build
 cd build
 cmake ..
-make
-make test
+make piMotionDetector
+./bin/piMotionDetector //this will generate a config file named pmd.cfg. Fill it out.
+./bin/piMotionDetector
 ```
 ## Required Hardware
 ### Rasperry PI Zero W

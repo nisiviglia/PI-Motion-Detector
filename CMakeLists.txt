@@ -24,12 +24,6 @@ add_executable(piMotionDetector src/pi_motion_detector.cpp ${piMotionDetector_SO
 target_link_libraries (piMotionDetector ${Boost_LIBRARIES})
 
 ##################################################################
-# Additional build targets
-#
-##################################################################
-add_executable (lv_maxsonar_ezx tools/lv_maxsonar_ezx.cpp tools/rs232.c)
-
-##################################################################
 # googletest setup
 # https://github.com/google/googletest/blob/master/googletest/README.md
 #
